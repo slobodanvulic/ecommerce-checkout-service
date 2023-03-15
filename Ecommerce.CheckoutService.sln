@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32328.378
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecommerce.CheckoutService.Api", "src\Ecommerce.CheckoutService.Api\Ecommerce.CheckoutService.Api.csproj", "{32D273A4-8654-4B28-BDA3-DD061E967F73}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecommerce.CheckoutService.Domain", "src\Ecommerce.CheckoutService.Domain\Ecommerce.CheckoutService.Domain.csproj", "{64030774-DFEE-42EA-AC3B-0710A1A980D5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecommerce.CheckoutService.Infrastructure", "src\Ecommerce.CheckoutService.Infrastructure\Ecommerce.CheckoutService.Infrastructure.csproj", "{8F01C19D-44AD-4A04-BA91-1E733B476C1C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecommerce.CheckoutService.Application", "src\Ecommerce.CheckoutService.Application\Ecommerce.CheckoutService.Application.csproj", "{52265293-2C19-4CD1-8CF9-CAA67938CE16}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{32D273A4-8654-4B28-BDA3-DD061E967F73}.Debug|x64.ActiveCfg = Debug|x64
+		{32D273A4-8654-4B28-BDA3-DD061E967F73}.Debug|x64.Build.0 = Debug|x64
+		{32D273A4-8654-4B28-BDA3-DD061E967F73}.Release|x64.ActiveCfg = Release|x64
+		{32D273A4-8654-4B28-BDA3-DD061E967F73}.Release|x64.Build.0 = Release|x64
+		{64030774-DFEE-42EA-AC3B-0710A1A980D5}.Debug|x64.ActiveCfg = Debug|x64
+		{64030774-DFEE-42EA-AC3B-0710A1A980D5}.Debug|x64.Build.0 = Debug|x64
+		{64030774-DFEE-42EA-AC3B-0710A1A980D5}.Release|x64.ActiveCfg = Release|x64
+		{64030774-DFEE-42EA-AC3B-0710A1A980D5}.Release|x64.Build.0 = Release|x64
+		{8F01C19D-44AD-4A04-BA91-1E733B476C1C}.Debug|x64.ActiveCfg = Debug|x64
+		{8F01C19D-44AD-4A04-BA91-1E733B476C1C}.Debug|x64.Build.0 = Debug|x64
+		{8F01C19D-44AD-4A04-BA91-1E733B476C1C}.Release|x64.ActiveCfg = Release|x64
+		{8F01C19D-44AD-4A04-BA91-1E733B476C1C}.Release|x64.Build.0 = Release|x64
+		{52265293-2C19-4CD1-8CF9-CAA67938CE16}.Debug|x64.ActiveCfg = Debug|x64
+		{52265293-2C19-4CD1-8CF9-CAA67938CE16}.Debug|x64.Build.0 = Debug|x64
+		{52265293-2C19-4CD1-8CF9-CAA67938CE16}.Release|x64.ActiveCfg = Release|x64
+		{52265293-2C19-4CD1-8CF9-CAA67938CE16}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {02E28BB8-6C2E-482F-84DC-3BBD4E4302A2}
+	EndGlobalSection
+EndGlobal
