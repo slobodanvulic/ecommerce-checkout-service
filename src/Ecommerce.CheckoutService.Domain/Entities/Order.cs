@@ -1,7 +1,7 @@
 ﻿namespace Ecommerce.CheckoutService.Domain.Entities;
 
 /// <summary>
-/// This is an aggregate root which maintains consistancy boundary
+/// This is an aggregate root which maintains boundary consistancy
 /// </summary>
 public sealed class Order : Entity, IAggregateRoot
 {
@@ -73,5 +73,6 @@ public sealed class Order : Entity, IAggregateRoot
                     discount));
         }
         Status= OrderStatus.Ready;
+        ModifiedAt= DateTimeOffset.UtcNow;
     }
 }
