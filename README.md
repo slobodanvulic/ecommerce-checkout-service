@@ -36,7 +36,10 @@ sequenceDiagram;
     Api->>M: Send CreateDraftOrderCommand
     M->>CH: Call CreateDraftOrderCommand Handler
     CH->>R: Save Draft Order
-    Api->>C: 201:Created
+    R-->>CH: Order Id
+    CH-->>M: Order Id
+    M-->>Api: Order Id
+    Api-->>C: 201:Created
 ```
 
 
@@ -56,5 +59,8 @@ sequenceDiagram;
     Api->>M: Send GetOrderQuery
     M->>QH: Call GetOrderQuery Handler
     QH->>R: Get Order
-    Api->>C: 200:Order
+    R-->>QH: Order
+    QH-->>M: Order
+    M-->>Api: Order
+    Api-->>C: 200:Order
 ```
