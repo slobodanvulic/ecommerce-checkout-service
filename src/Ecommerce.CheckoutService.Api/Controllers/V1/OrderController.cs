@@ -4,7 +4,6 @@ using Ecommerce.CheckoutService.Application.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-
 namespace Ecommerce.CheckoutService.Api.Controllers.V1;
 
 [Route("api/v1/[controller]")]
@@ -22,25 +21,44 @@ public class OrderController : ControllerBase
 
 
     [HttpGet("{id}", Name = nameof(GetOrder))]
-    public async Task<ActionResult<OrderResponse>> GetOrder(Guid id, CancellationToken cancellationToken)
+    public async Task<ActionResult<OrderDetailsResponse>> GetOrder(Guid id, CancellationToken cancellationToken)
     {
-        var orderToReturn = await _mediator.Send(new GetOrderQuery(id), cancellationToken);
-        return Ok(orderToReturn);
+        var orderResult = (await _mediator.Send(new GetOrderQuery(id), cancellationToken))
+            .Log<OrderController>("Execute GetOrderQuery");
+
+        if (orderResult.IsSuccess)
+        {
+            return Ok(orderResult.Value);
+        }
+
+        return orderResult.MapErrorsToResponse();
     }
 
     [HttpPost("create-draft")]
     public async Task<IActionResult> CreateDraftOrder([FromBody] CreateDraftOrderRequest order, CancellationToken cancellationToken)
     {
-        var orderToReturn = await _mediator.Send(new CreateDraftOrderCommand(order), cancellationToken);
+        var orderResult = (await _mediator.Send(new CreateDraftOrderCommand(order), cancellationToken))
+            .Log<OrderController>("Execute CreateDraftOrderCommand");
 
-        return CreatedAtRoute(nameof(GetOrder), new { id = orderToReturn.OrderId }, orderToReturn);
+        if (orderResult.IsSuccess)
+        {
+            return CreatedAtRoute(nameof(GetOrder), new { id = orderResult.Value.Id }, orderResult.Value);
+        }
+
+        return orderResult.MapErrorsToResponse();
     }
 
     [HttpPost("{orderId}/add-items")]
     public async Task<IActionResult> AddOrderItems(Guid orderId, [FromBody] AddOrderItemsRequest orderItems, CancellationToken cancellationToken)
     {
-        var orderToReturn = await _mediator.Send(new AddOrderItemsCommand(orderId, orderItems), cancellationToken);
+        var orderResult = (await _mediator.Send(new AddOrderItemsCommand(orderId, orderItems), cancellationToken))
+            .Log<OrderController>("Execute AddOrderItemsCommand");
 
-        return CreatedAtRoute(nameof(GetOrder), new { id = orderToReturn.OrderId }, orderToReturn);
+        if (orderResult.IsSuccess)
+        {
+            return CreatedAtRoute(nameof(GetOrder), new { id = orderResult.Value.Id }, orderResult.Value);
+        }
+
+        return orderResult.MapErrorsToResponse();
     }
 }

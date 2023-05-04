@@ -2,9 +2,5 @@
 
 namespace Ecommerce.CheckoutService.Application.Model;
 
-public record OrderResponse(
-    Guid OrderId,
-    Guid CustomerId,
-    OrderStatus Status,
-    decimal TotalAmount);
+public record OrderResponse(Guid Id);
 
