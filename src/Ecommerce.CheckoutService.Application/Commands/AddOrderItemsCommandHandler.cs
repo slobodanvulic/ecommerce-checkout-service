@@ -1,11 +1,14 @@
 ﻿using Ecommerce.CheckoutService.Application.Model;
+using Ecommerce.CheckoutService.Domain.Entities;
+using FluentResults;
+using FluentResults.Extensions;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace Ecommerce.CheckoutService.Application.Commands;
 
-public record AddOrderItemsCommand(Guid OrderId, AddOrderItemsRequest OrderItems) : IRequest<OrderResponse>;
-public class AddOrderItemsCommandHandler : IRequestHandler<AddOrderItemsCommand, OrderResponse>
+public record AddOrderItemsCommand(Guid OrderId, AddOrderItemsRequest OrderItems) : IRequest<Result<OrderResponse>>;
+public class AddOrderItemsCommandHandler : IRequestHandler<AddOrderItemsCommand, Result<OrderResponse>>
 {
     private readonly IOrderRepository _orderRepository;
     private readonly ILogger<CreateDraftOrderCommandHandler> _logger;
@@ -19,36 +22,46 @@ public class AddOrderItemsCommandHandler : IRequestHandler<AddOrderItemsCommand,
     }
 
 
-    public async Task<OrderResponse> Handle(AddOrderItemsCommand request, CancellationToken cancellationToken)
+    public async Task<Result<OrderResponse>> Handle(AddOrderItemsCommand request, CancellationToken cancellationToken)
     {
-        var order = await _orderRepository.GetOrderAsync(request.OrderId, cancellationToken);
+        return await GetOrderAsync(request.OrderId, cancellationToken)
+            .Bind(order => AddOrderItems(order, request.OrderItems.OrderItems))
+            .Bind(order => _orderRepository.SaveOrderAsync(order, cancellationToken))
+            .Bind(CreateOrderResponse);
+    }
 
-        if (order is null)
+    private async Task<Result<Order>> GetOrderAsync(Guid orderId, CancellationToken cancellationToken)
+    {
+        var orderResult = await _orderRepository.GetOrderAsync(orderId, cancellationToken);
+        if (orderResult.IsFailed)
         {
-            // this will be replaced with Result
-            throw new Exception("Order does not exist");
+            return orderResult.ToResult();
         }
 
-        foreach(var orderItem in request.OrderItems.OrderItems)
+        if (orderResult.Value is null)
+        {
+            return orderResult.WithError($"Order with given id {orderId} does not exist.")!;
+        }
+        
+        return orderResult!;
+    }
+
+    private Result<Order> AddOrderItems(Order order, ICollection<OrderItemRequest> orderItems)
+    {
+        foreach (var orderItem in orderItems)
         {
             order.AddOrderItem(
-                orderItem.ProductId, 
-                orderItem.Quantity, 
-                orderItem.ProductPrice, 
+                orderItem.ProductId,
+                orderItem.Quantity,
+                orderItem.ProductPrice,
                 orderItem.Discount);
         }
 
+        return Result.Ok(order);
+    }
 
-        var id = await _orderRepository.SaveOrderAsync(order, cancellationToken);
-
-
-        var result = new OrderResponse(
-            id,
-            order.Customer.Id,
-            order.Status,
-            order.TotalAmount);
-
-
-        return result;
+    private Result<OrderResponse> CreateOrderResponse(Guid orderId)
+    {
+        return Result.Ok(new OrderResponse(orderId));
     }
 }

@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentResults" Version="3.15.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Ecommerce.CheckoutService.Application\Ecommerce.CheckoutService.Application.csproj" />
     <ProjectReference Include="..\Ecommerce.CheckoutService.Infrastructure\Ecommerce.CheckoutService.Infrastructure.csproj" />
   </ItemGroup>
