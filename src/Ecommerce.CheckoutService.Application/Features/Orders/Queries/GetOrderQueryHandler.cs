@@ -1,11 +1,11 @@
-﻿using Ecommerce.CheckoutService.Application.Model;
+﻿using Ecommerce.CheckoutService.Application.Features.Orders.Model;
 using Ecommerce.CheckoutService.Domain.Entities;
 using FluentResults;
 using FluentResults.Extensions;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace Ecommerce.CheckoutService.Application.Queries;
+namespace Ecommerce.CheckoutService.Application.Features.Orders.Queries;
 
 public record GetOrderQuery(Guid OrderId) : IRequest<Result<OrderDetailsResponse>>;
 public class GetOrderQueryHandler : IRequestHandler<GetOrderQuery, Result<OrderDetailsResponse>>

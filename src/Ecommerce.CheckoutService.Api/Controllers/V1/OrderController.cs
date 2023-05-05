@@ -1,6 +1,6 @@
-﻿using Ecommerce.CheckoutService.Application.Commands;
-using Ecommerce.CheckoutService.Application.Model;
-using Ecommerce.CheckoutService.Application.Queries;
+﻿using Ecommerce.CheckoutService.Application.Features.Orders.Commands;
+using Ecommerce.CheckoutService.Application.Features.Orders.Model;
+using Ecommerce.CheckoutService.Application.Features.Orders.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
