@@ -1,11 +1,11 @@
-﻿using Ecommerce.CheckoutService.Application.Model;
+﻿using Ecommerce.CheckoutService.Application.Features.Orders.Model;
 using Ecommerce.CheckoutService.Domain.Entities;
 using FluentResults;
 using FluentResults.Extensions;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace Ecommerce.CheckoutService.Application.Commands;
+namespace Ecommerce.CheckoutService.Application.Features.Orders.Commands;
 
 public record AddOrderItemsCommand(Guid OrderId, AddOrderItemsRequest OrderItems) : IRequest<Result<OrderResponse>>;
 public class AddOrderItemsCommandHandler : IRequestHandler<AddOrderItemsCommand, Result<OrderResponse>>
@@ -17,8 +17,8 @@ public class AddOrderItemsCommandHandler : IRequestHandler<AddOrderItemsCommand,
         IOrderRepository orderRepository,
         ILogger<CreateDraftOrderCommandHandler> logger)
     {
-        _orderRepository= orderRepository;
-        _logger= logger;
+        _orderRepository = orderRepository;
+        _logger = logger;
     }
 
 
@@ -42,7 +42,7 @@ public class AddOrderItemsCommandHandler : IRequestHandler<AddOrderItemsCommand,
         {
             return orderResult.WithError($"Order with given id {orderId} does not exist.")!;
         }
-        
+
         return orderResult!;
     }
 
@@ -50,8 +50,13 @@ public class AddOrderItemsCommandHandler : IRequestHandler<AddOrderItemsCommand,
     {
         foreach (var orderItem in orderItems)
         {
+            if(!Guid.TryParse(orderItem.ProductId, out var productId))
+            {
+                return Result.Fail($"ProductId must be guid - value is {orderItem.ProductId}");
+            }
+
             order.AddOrderItem(
-                orderItem.ProductId,
+                productId,
                 orderItem.Quantity,
                 orderItem.ProductPrice,
                 orderItem.Discount);

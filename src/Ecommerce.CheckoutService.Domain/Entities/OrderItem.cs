@@ -15,12 +15,12 @@ public sealed class OrderItem : Entity
         ProductId = productId;
         Quantity = quantity;
         ProductPrice = productPrice;
-        Discount= discount;
+        Discount = discount;
     }
 
     public void SetNewDiscount(decimal discount)
     {
-        //alidation
+        //validation
 
         Discount = discount;
     }
