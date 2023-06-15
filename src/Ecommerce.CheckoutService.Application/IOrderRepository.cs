@@ -5,8 +5,7 @@ namespace Ecommerce.CheckoutService.Application;
 
 public interface IOrderRepository
 {
-    Task<Result<Guid>> SaveOrderAsync(Order order, CancellationToken cancellationToken);
-
     Task<Result<Order?>> GetOrderAsync(Guid orderId, CancellationToken cancellationToken);
 
+    Result<Guid> AddOrder(Order order, CancellationToken cancellationToken);
 }

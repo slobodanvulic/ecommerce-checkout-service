@@ -34,7 +34,7 @@ public class OrderController : ControllerBase
         return orderResult.MapErrorsToResponse();
     }
 
-    [HttpPost("create-draft")]
+    [HttpPost("draft")]
     public async Task<IActionResult> CreateDraftOrder([FromBody] CreateDraftOrderRequest order, CancellationToken cancellationToken)
     {
         var orderResult = (await _mediator.Send(new CreateDraftOrderCommand(order), cancellationToken))
@@ -48,7 +48,7 @@ public class OrderController : ControllerBase
         return orderResult.MapErrorsToResponse();
     }
 
-    [HttpPost("{orderId}/add-items")]
+    [HttpPost("{orderId}/items")]
     public async Task<IActionResult> AddOrderItems(Guid orderId, [FromBody] AddOrderItemsRequest orderItems, CancellationToken cancellationToken)
     {
         var orderResult = (await _mediator.Send(new AddOrderItemsCommand(orderId, orderItems), cancellationToken))
@@ -60,5 +60,19 @@ public class OrderController : ControllerBase
         }
 
         return orderResult.MapErrorsToResponse();
+    }
+
+    [HttpDelete("{orderId}/items/{orderItemId}")]
+    public async Task<IActionResult> RemoveOrderItems(Guid orderId, Guid orderItemId, CancellationToken cancellationToken)
+    {
+        var result = (await _mediator.Send(new RemoveOrderItemCommand(orderId, orderItemId), cancellationToken))
+            .Log<OrderController>("Execute RemoveOrderItems");
+
+        if (result.IsSuccess)
+        {
+            return NoContent();
+        }
+
+        return result.MapErrorsToResponse();
     }
 }

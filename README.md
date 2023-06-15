@@ -18,6 +18,11 @@ This layer has a reference only to the Domain.
 The infrastructure layer contains an implementation of Repositories.
 This layer can have references to the Domain and the Application layers.
 
+## EF Core 
+EF Core is used as a object relation mapper.
+EFCore command-line commands for migrations.
+* add-migration create_database
+* update-database
 
 ## Sequence diagram
 

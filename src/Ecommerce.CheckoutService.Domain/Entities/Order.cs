@@ -1,7 +1,7 @@
 ﻿namespace Ecommerce.CheckoutService.Domain.Entities;
 
 /// <summary>
-/// This is an aggregate root which maintains boundary consistancy
+/// This is an aggregate root which maintains boundary consistency
 /// </summary>
 public sealed class Order : Entity, IAggregateRoot
 {
@@ -9,10 +9,12 @@ public sealed class Order : Entity, IAggregateRoot
     public DateTimeOffset ModifiedAt { get; private set; }
     public Customer Customer { get; private set; }
     public OrderStatus Status { get; private set; }
-    public IReadOnlyCollection<OrderItem> OrderItems => _orderItems.AsReadOnly();
-    public decimal TotalAmount => OrderItems.Sum(x => x.TotalAmount);
+    public IReadOnlyList<OrderItem> OrderItems => _orderItems.ToList();
+    public decimal TotalAmount => _orderItems.Sum(x => x.TotalAmount);
 
     private readonly List<OrderItem> _orderItems= new();
+
+    private Order(){}
 
     public static Order NewDraft(Guid id, Customer customer)
     {
@@ -30,27 +32,12 @@ public sealed class Order : Entity, IAggregateRoot
     }
 
     /// <summary>
-    /// This is only here to create dummy order from a fake repository, will be deleted
-    /// </summary>
-    public Order(Guid id, Customer customer, List<OrderItem> orderItems) : base(id)
-    {
-        ArgumentNullException.ThrowIfNull(customer, nameof(customer));
-        ArgumentNullException.ThrowIfNull(orderItems, nameof(orderItems));
-
-        CreatedAt = DateTimeOffset.UtcNow;
-        ModifiedAt = CreatedAt;
-        Customer = customer;
-        Status = OrderStatus.Ready;
-        _orderItems = orderItems;
-    }
-
-    /// <summary>
-    /// Since Order is an aggregat root, this is an only way to add new items to the order.
+    /// Since Order is an aggregate root, this is an only way to add new items to the order.
     /// Any validation and business logic is done by aggregate root.
     /// </summary>
     public void AddOrderItem(Guid productId, int quantity, decimal productPrice, decimal discount)
     {
-        var existingOrderForProduct = _orderItems.Where(o => o.ProductId == productId).SingleOrDefault();
+        var existingOrderForProduct = _orderItems.SingleOrDefault(o => o.ProductId == productId);
 
         if (existingOrderForProduct is not null)
         {
@@ -66,7 +53,7 @@ public sealed class Order : Entity, IAggregateRoot
 
             _orderItems.Add(
                 new OrderItem(
-                    Guid.NewGuid(),
+                    Guid.Empty,
                     productId,
                     quantity,
                     productPrice,
@@ -75,4 +62,17 @@ public sealed class Order : Entity, IAggregateRoot
         Status= OrderStatus.Ready;
         ModifiedAt= DateTimeOffset.UtcNow;
     }
+
+    public bool RemoveOrderItem(Guid orderItemId)
+    {
+        var orderToRemove = _orderItems.SingleOrDefault(oi => oi.Id == orderItemId);
+
+        if (orderToRemove is null)
+        {
+            return false;
+        }
+
+        return _orderItems.Remove(orderToRemove);
+    } 
+
 }

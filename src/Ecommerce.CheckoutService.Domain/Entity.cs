@@ -1,11 +1,13 @@
-﻿using System.Runtime.ExceptionServices;
-
-namespace Ecommerce.CheckoutService.Domain;
+﻿namespace Ecommerce.CheckoutService.Domain;
 
 public abstract class Entity : IEntity, IEquatable<Entity>
 {
     public Guid Id { get; private init; }
 
+    protected Entity()
+    {
+
+    }
     protected Entity(Guid id)
     {
         Id = id;

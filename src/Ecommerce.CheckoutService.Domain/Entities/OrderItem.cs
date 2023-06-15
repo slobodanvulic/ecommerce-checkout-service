@@ -8,6 +8,7 @@ public sealed class OrderItem : Entity
     public decimal Discount { get; private set; }
     public decimal TotalAmount => ProductPrice * Quantity - ProductPrice * Quantity * Discount;
 
+    private OrderItem(){ }
     public OrderItem(Guid id, Guid productId, int quantity, decimal productPrice, decimal discount) : base(id)
     {
         //validation

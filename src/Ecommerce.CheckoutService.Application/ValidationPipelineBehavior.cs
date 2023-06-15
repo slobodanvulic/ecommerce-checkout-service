@@ -5,7 +5,8 @@ using MediatR;
 
 namespace Ecommerce.CheckoutService.Application;
 
-public class ValidationPipelineBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+public class ValidationPipelineBehavior<TRequest, TResponse> 
+    : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
     where TResponse : ResultBase, new()
 {
@@ -16,7 +17,9 @@ public class ValidationPipelineBehavior<TRequest, TResponse> : IPipelineBehavior
         _validators = valiators;
     }
 
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+    public async Task<TResponse> Handle(TRequest request, 
+        RequestHandlerDelegate<TResponse> next, 
+        CancellationToken cancellationToken)
     {
         var validationErrors = GetValidationErrors(request);
         
@@ -26,10 +29,8 @@ public class ValidationPipelineBehavior<TRequest, TResponse> : IPipelineBehavior
         }
 
         var result = new TResponse();
-        foreach(var error in validationErrors)
-        {
-            result.Reasons.Add(error);
-        }
+
+        result.Reasons.AddRange(validationErrors);
 
         return result;
     }

@@ -11,13 +11,16 @@ public record AddOrderItemsCommand(Guid OrderId, AddOrderItemsRequest OrderItems
 public class AddOrderItemsCommandHandler : IRequestHandler<AddOrderItemsCommand, Result<OrderResponse>>
 {
     private readonly IOrderRepository _orderRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<CreateDraftOrderCommandHandler> _logger;
 
     public AddOrderItemsCommandHandler(
         IOrderRepository orderRepository,
+        IUnitOfWork unitOfWork,
         ILogger<CreateDraftOrderCommandHandler> logger)
     {
         _orderRepository = orderRepository;
+        _unitOfWork = unitOfWork;
         _logger = logger;
     }
 
@@ -26,7 +29,7 @@ public class AddOrderItemsCommandHandler : IRequestHandler<AddOrderItemsCommand,
     {
         return await GetOrderAsync(request.OrderId, cancellationToken)
             .Bind(order => AddOrderItems(order, request.OrderItems.OrderItems))
-            .Bind(order => _orderRepository.SaveOrderAsync(order, cancellationToken))
+            .Bind(order => SaveChangesAsync(order.Id, cancellationToken))
             .Bind(CreateOrderResponse);
     }
 
@@ -63,6 +66,12 @@ public class AddOrderItemsCommandHandler : IRequestHandler<AddOrderItemsCommand,
         }
 
         return Result.Ok(order);
+    }
+
+    private async Task<Result<Guid>> SaveChangesAsync(Guid orderId, CancellationToken cancellationToken)
+    {
+        return (await _unitOfWork.CommitAsync(cancellationToken))
+            .ToResult<Guid>(orderId);
     }
 
     private Result<OrderResponse> CreateOrderResponse(Guid orderId)

@@ -15,8 +15,8 @@ internal class CustomerQueries : ICustomerQueries
                     customerId,
                     new Name("Foo", "Bar"),
                     new Email("foo@bar.com"),
-                    new Address("London", "First Street", "50A")
-                    ))
+                    new Address("London", "First Street", "50A"),
+                    customerId))
             .WithSuccess($"Successful call to Customers API to get customer with id {customerId}")
             .Log<CustomerQueries>());
 
